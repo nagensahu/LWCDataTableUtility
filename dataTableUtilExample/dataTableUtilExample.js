@@ -1,4 +1,5 @@
 import { LightningElement } from 'lwc';
+//Import Utility
 import DataTableUtil from 'c/dataTableUtil';
 import getContacts from '@salesforce/apex/DataTablesController.getContacts';
 
