@@ -3,7 +3,7 @@ export default class DataTableUtil {
     columns;
     //Pagination variables BEGIN
     pageData;
-    rowsPerPage = 10;
+    rowsPerPage;
     rowsPerPageText;
     pageButtonArray = [];
     currentPage;
@@ -12,21 +12,7 @@ export default class DataTableUtil {
     totalRows;
     noPrev = false;
     noNext = false;
-    rowsPerPageOptions = [
-        {
-            value : "10",
-            label : "10"
-        },
-        {
-            value : "20",
-            label : "20"
-        },
-        {
-            value : "30",
-            label : "30"
-        } 
-
-    ];
+    rowsPerPageOptions;
     //Pagination Variables END
 
     //Sorting variables BEGIN
@@ -40,7 +26,8 @@ export default class DataTableUtil {
     searchSpinner = false;
     originalDataList;
     //Search Variables END
-    constructor(){
+    constructor(rpp){
+        this.rowsPerPage = rpp;
         this.rowsPerPageText = String(this.rowsPerPage);
     }
 

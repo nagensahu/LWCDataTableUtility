@@ -1,4 +1,5 @@
 import { LightningElement } from 'lwc';
+//Import the Utility
 import DataTableUtil from 'c/dataTableUtil';
 import getContacts from '@salesforce/apex/DataTablesController.getContacts';
 
@@ -6,10 +7,11 @@ export default class DataTableUtilExample extends LightningElement {
     util;
     columns;
     pageData;
+    rowsPerPageOptions;
 
     constructor(){
         super();
-        this.util = new DataTableUtil();
+        this.util = new DataTableUtil(10);
     }
 
 
@@ -28,6 +30,11 @@ export default class DataTableUtilExample extends LightningElement {
 
     changePage(event){
         this.util.changePage(event);
+        this.pageData = this.util.pageData;
+    }
+
+    changeRowsPerPage(event){
+        this.util.changeRowsPerPage(event);
         this.pageData = this.util.pageData;
     }
 
@@ -105,5 +112,23 @@ export default class DataTableUtilExample extends LightningElement {
             sortable : true
         }
     ];
+
+    rowsPerPageOptions = [
+        {
+            value : "10",
+            label : "10"
+        },
+        {
+            value : "20",
+            label : "20"
+        },
+        {
+            value : "30",
+            label : "30"
+        } 
+
+    ];
+
+    
 
 }
