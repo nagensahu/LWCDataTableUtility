@@ -50,10 +50,10 @@ export default class DataTableUtilExample extends LightningElement {
         
         //sort using util methods
         if(fieldName == 'Phone')
-        this.util.sortData(null,'number',this.util.removeNonnumberCharacters);
+        this.util.sortData(this.util.removeNonnumberCharacters,'number');
 
         if(fieldName == 'Birthdate')
-        this.util.sortData(null,'number',this.util.parseIntoDateYYYYDDMM);
+        this.util.sortData(this.util.parseIntoDateYYYYDDMM,'date');
 
 
 
