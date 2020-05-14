@@ -17,7 +17,6 @@ export default class DataTableUtilExample extends LightningElement {
 
     connectedCallback(){
         getContacts().then(result => {
-            console.log(result);
             this.util.dataList = [...result];
             //for search
             this.util.originalDataList = [...result];
