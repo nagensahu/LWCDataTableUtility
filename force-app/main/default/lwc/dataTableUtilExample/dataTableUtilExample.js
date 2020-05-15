@@ -28,12 +28,25 @@ export default class DataTableUtilExample extends LightningElement {
     }
 
     changePage(event){
-        this.util.changePage(event);
+        let newPageNum;
+        event.target.label == "Next" ? newPageNum = parseInt(this.util.currentPage)+1 : newPageNum = parseInt(this.util.currentPage)-1;
+        this.util.setPageData(newPageNum.toString());
+        this.pageData = this.util.pageData;
+    }
+
+    nextPage(event){
+        this.util.nextPage();
+        this.pageData = this.util.pageData;
+    }
+
+    prevPage(event){
+        this.util.prevPage();
         this.pageData = this.util.pageData;
     }
 
     changeRowsPerPage(event){
-        this.util.changeRowsPerPage(event);
+        let newRpp = parseInt(event.target.value);
+        this.util.changeRowsPerPage(newRpp);
         this.pageData = this.util.pageData;
     }
 
@@ -60,7 +73,8 @@ export default class DataTableUtilExample extends LightningElement {
     }
 
     searchTable(event){
-        this.util.searchTable(event);
+        let searchText = event.target.value;
+        this.util.searchTable(searchText);
         this.pageData = this.util.pageData;
     }
 

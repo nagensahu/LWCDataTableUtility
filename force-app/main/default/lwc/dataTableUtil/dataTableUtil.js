@@ -107,36 +107,38 @@ export default class DataTableUtil {
     }
 
     /*****************************************************
-     * @param {Object} event - event which has target value of rows per page
+     * @param {Nmmber} rowsPerPage - Rows per page value
      * 
      ****************************************************/
-    changeRowsPerPage(event){
-        this.rowsPerPage = parseInt(event.target.value);
+    changeRowsPerPage(rowsPerPage){
+        this.rowsPerPage = rowsPerPage;
         this.setNumberOfPages(this.dataList.length);
         this.setPageData("1");
     }
 
     /*****************************************************
-     * @param {Object} event - event which has target value of Next/Previous
-     * 
+     * sets pageData to the next page records
      ****************************************************/
-    changePage(event){
-        let newPageNum;
-        event.target.label == "Next" ? newPageNum = parseInt(this.currentPage)+1 : newPageNum = parseInt(this.currentPage)-1;
+    nextPage(){
+        if(!this.noNext){
+            let newPageNum = parseInt(this.currentPage)+1;
+            this.setPageData(newPageNum.toString());
+        }
+    }
+
+    /*****************************************************
+     * sets pageData to the previous page records
+     ****************************************************/
+    prevPage(){
+        if(!this.noPrev){
+        let newPageNum = parseInt(this.currentPage)-1;
         this.setPageData(newPageNum.toString());
+        }
     }
 
     /****Pagination Functions END*************************/
 
     /****Sorting Functions BEGIN**************************/
-
-    /*****************************************************
-     * @param {Object} event - event- not used
-     * 
-     ****************************************************/
-    handleSort(event){
-        this.sortData(this.sortedBy, this.sortDirection);
-    }
 
     /*****************************************************
      * @param {Function} primer - primer function that the user can pass 
@@ -264,12 +266,12 @@ export default class DataTableUtil {
     /****Search Functions BEGIN**************************/
 
     /*****************************************************
-     * @param {Object} event - event where target value contains search string
+     * @param {String} searchText
      ****************************************************/
-    searchTable(event){
+    searchTable(searchText){
         try{
-            if(event.target.value){
-                this.searchText = event.target.value;
+            if(searchText){
+                this.searchText = searchText;
                 this.dataList = this.originalDataList.filter(row => {return this.searchRow(row,this.searchText)});
             }else{
                 this.dataList = [...this.originalDataList];
