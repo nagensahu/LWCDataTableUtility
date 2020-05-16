@@ -19,7 +19,7 @@ export default class DataTableUtil {
     pageData;
     rowsPerPage;
     rowsPerPageText;
-    pageButtonArray = [];
+    pageCount = [];
     currentPage;
     startRowNumber;
     lastRowNumber;
@@ -58,12 +58,9 @@ export default class DataTableUtil {
      ****************************************************/
     setNumberOfPages(size){
         let numberOfPages = Math.ceil(size/this.rowsPerPage);
-        this.pageButtonArray = [];
+        this.pageCount = [];
         for(var i=1; i <= numberOfPages; i++){
-            this.pageButtonArray.push({
-                "num":i,
-                "variantType": i==1 ? "brand" :"neutral"
-            });
+            this.pageCount.push(i);
         }
     }
 
@@ -95,7 +92,7 @@ export default class DataTableUtil {
             //check if its the last or first page
             this.noNext = false;
             this.noPrev = false;
-            if(pageNum == this.pageButtonArray.length){
+            if(pageNum == this.pageCount.length){
                 this.noNext = true;
             }
             if(pageNum == "1"){
