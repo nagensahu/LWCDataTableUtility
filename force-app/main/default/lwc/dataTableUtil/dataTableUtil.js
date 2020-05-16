@@ -11,22 +11,62 @@
  * The variable pageData will contain the first page data if everything went well. Copy this variable and wire to the html.
  */
 export default class DataTableUtil {
+    /**
+     * The total list of data
+     * @type {Array} array of objects as needed by lightning datatable
+     */
     dataList;
+
+    /**
+     * The column information
+     * @type {Array} array of objects as needed by lightning datatable
+     */
     columns;
+
+    /**
+     * The error, if any in the util
+     * @type {Object}
+     */
     error;
     
     //Pagination variables BEGIN
+
+    /**
+     * The rows to display on the current page
+     * @type {Array} array of objects as needed by lightning datatable
+     */
     pageData;
+
     rowsPerPage;
+
+    /**
+     * The current rows per page value. Use this for the combobox value attribute
+     * @type {String} array of objects as needed by lightning datatable
+     */
     rowsPerPageText;
-    pageCount = [];
+
+    /**
+    *Array of all the page numbers and the current page
+    *@type {Array} array of object. Properties - num,selected
+    */
+    pageList = [];
+
     currentPage;
     startRowNumber;
     lastRowNumber;
     totalRows;
+    /**
+     * boolean to specify whether there are any more pages to paginate backward
+     * @type {Boolean}
+     */
     noPrev = false;
+
+    /**
+     * boolean to specify whether there are any more pages to paginate forward
+     * @type {Boolean}
+     */
     noNext = false;
-    rowsPerPageOptions;
+    
     //Pagination Variables END
 
     //Sorting variables BEGIN
@@ -58,20 +98,14 @@ export default class DataTableUtil {
      ****************************************************/
     setNumberOfPages(size){
         let numberOfPages = Math.ceil(size/this.rowsPerPage);
-        this.pageCount = [];
+        this.pageList = [];
         for(var i=1; i <= numberOfPages; i++){
-            this.pageCount.push(i);
+            this.pageList.push({
+                num : i,
+                selected : null 
+            });
         }
     }
-
-   /* changePage(event){
-        this.currentPage = event.target.label;
-        console.log('button clicked was'+this.currentPage);
-        this.setPageData(this.currentPage);
-        this.pageButtonArray.forEach(element =>{
-            element.num == this.currentPage ? element.variantType = "brand" : element.variantType = "neutral";
-        })
-    }*/
 
     /*****************************************************
      * @param {String} pageNum - page number 
@@ -80,7 +114,13 @@ export default class DataTableUtil {
      ****************************************************/
     setPageData(pageNum){
         try{
+            //set current page number
             this.currentPage = pageNum;
+            //set selected page in pageList
+            this.pageList.forEach(element=>{
+                element.selected = parseInt(this.currentPage) ==  element.num ? true : false
+            });
+            //get the page data to be shown on table
             let totalRows = this.dataList.length;
             let rowsToOffset = (pageNum-1)*this.rowsPerPage;
             let lastRowOfPage = pageNum*this.rowsPerPage;
