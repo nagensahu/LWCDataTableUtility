@@ -30,5 +30,21 @@
                 onchange={changeRowsPerPage}
                 value={util.rowsPerPageText}>
             </lightning-combobox>
+            <!--<lightning-button-group>
+                <lightning-button 
+                    label="Prev"
+                    onclick={prevPage}
+                    disabled={util.noPrev}>
+                </lightning-button>
+                <lightning-button 
+                    label={util.currentPage}>
+                </lightning-button>
+                <lightning-button 
+                    label="Next"
+                    onclick={nextPage}
+                    disabled={util.noNext}>
+                </lightning-button>
+            </lightning-button-group>-->
+            {util.error}
         </lightning-card>
 </template>

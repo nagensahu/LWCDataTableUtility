@@ -13,16 +13,13 @@ export default class DataTableUtilExample extends LightningElement {
     constructor(){
         super();
         this.util = new DataTableUtil(10);
+        this.util.columns = this.columns;
     }
 
 
     connectedCallback(){
         getContacts().then(result => {
-            this.util.dataList = [...result];
-            //for search
-            this.util.originalDataList = [...result];
-            //for button list
-            this.util.setNumberOfPages(this.util.dataList.length);
+            this.util.initializeUtil(result);
             this.util.setPageData("1");
             this.setPageButtons();
             this.pageData = this.util.pageData;

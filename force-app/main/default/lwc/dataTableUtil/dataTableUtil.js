@@ -22,13 +22,14 @@ export default class DataTableUtil {
      * @type {Array} array of objects as needed by lightning datatable
      */
     columns;
+    columnNameArr = [];
 
     /**
      * The error, if any in the util
      * @type {Object}
      */
     error;
-    
+
     //Pagination variables BEGIN
 
     /**
@@ -90,6 +91,18 @@ export default class DataTableUtil {
         this.rowsPerPageText = String(this.rowsPerPage);
     }
 
+    /*****************************************************
+     * Initializes the utility with the total of the rows
+     * 
+     ****************************************************/
+    initializeUtil(rows){
+        //Set dataUtil and a copy to be used in search
+        this.dataList = [...rows];
+        this.originalDataList = [...rows];
+        //for button list
+        this.setNumberOfPages(this.dataList.length);
+    }
+
     /***Pagination functions BEGIN******************************************************************************/
 
     /*****************************************************
@@ -114,32 +127,36 @@ export default class DataTableUtil {
      ****************************************************/
     setPageData(pageNum){
         try{
-            //set current page number
-            this.currentPage = pageNum;
-            //set selected page in pageList
-            this.pageList.forEach(element=>{
-                element.selected = parseInt(this.currentPage) ==  element.num ? true : false
-            });
-            //get the page data to be shown on table
-            let totalRows = this.dataList.length;
-            let rowsToOffset = (pageNum-1)*this.rowsPerPage;
-            let lastRowOfPage = pageNum*this.rowsPerPage;
-            this.pageData = this.dataList.slice(rowsToOffset,lastRowOfPage);
-            this.startRowNumber = rowsToOffset+1;
-            this.lastRowNumber = totalRows > lastRowOfPage ? lastRowOfPage : totalRows;
-            this.totalRows = totalRows;
+            if(pageNum > 0 && pageNum <= this.pageList.length){
+                //set current page number
+                this.currentPage = pageNum;
+                //set selected page in pageList
+                this.pageList.forEach(element=>{
+                    element.selected = parseInt(this.currentPage) ==  element.num ? true : false
+                });
+                //get the page data to be shown on table
+                let totalRows = this.dataList.length;
+                let rowsToOffset = (pageNum-1)*this.rowsPerPage;
+                let lastRowOfPage = pageNum*this.rowsPerPage;
+                this.pageData = this.dataList.slice(rowsToOffset,lastRowOfPage);
+                this.startRowNumber = rowsToOffset+1;
+                this.lastRowNumber = totalRows > lastRowOfPage ? lastRowOfPage : totalRows;
+                this.totalRows = totalRows;
 
-            //check if its the last or first page
-            this.noNext = false;
-            this.noPrev = false;
-            if(pageNum == this.pageCount.length){
-                this.noNext = true;
-            }
-            if(pageNum == "1"){
-                this.noPrev = true;
+                //check if its the last or first page
+                this.noNext = false;
+                this.noPrev = false;
+                if(pageNum == this.pageList.length){
+                    this.noNext = true;
+                }
+                if(pageNum == "1"){
+                    this.noPrev = true;
+                }
+            }else{
+                this.pageData = [];
             }
         }catch(e){
-            this.error = e;
+            this.errorHandler(e);
         }
     }
 
@@ -213,7 +230,7 @@ export default class DataTableUtil {
             this.setNumberOfPages(this.dataList.length);
             this.setPageData("1");
         }catch(e){
-            this.error = e;
+            this.errorHandler(e);
         }
     }
 
@@ -306,6 +323,13 @@ export default class DataTableUtil {
      * @param {String} searchText
      ****************************************************/
     searchTable(searchText){
+        //build the column name array if columns has been defined in the util
+        if(this.columns){
+            for(const value of this.columns.values()){
+                this.columnNameArr.push(value.fieldName);
+            }
+        }
+        console.log(this.columnNameArr);
         try{
             if(searchText){
                 this.searchText = searchText;
@@ -316,7 +340,7 @@ export default class DataTableUtil {
             this.setNumberOfPages(this.dataList.length);
             this.setPageData("1");
         }catch(e){
-            this.error = e;
+            this.errorHandler(e);
         }
     }
 
@@ -326,10 +350,39 @@ export default class DataTableUtil {
      * This is an internal method for the searchTable method.
      ****************************************************/
     searchRow(rowObject,searchKey){
-        return Object.values(rowObject).some(element =>{
-            return element.toLowerCase().includes(searchKey.toLowerCase());
-        });
+        //if the columns name array is defined, search only json keys which are present in array 
+        //else generally search the whole json
+       if(this.columnNameArr.length > 0){
+            return Object.keys(rowObject).some(key=>{
+                if(this.columnNameArr.includes(key)){
+                    if(rowObject[key].toLowerCase().includes(searchKey.toLowerCase())){
+                        console.log('Match Found !')
+                        console.log('Key');
+                        console.log(key);
+                        console.log('Value');
+                        console.log(rowObject[key]);
+                    }
+                    return rowObject[key].toLowerCase().includes(searchKey.toLowerCase());
+                }else{
+                    return false;
+                }
+            })
+        }else{
+            return Object.values(rowObject).some(element =>{
+                return element.toLowerCase().includes(searchKey.toLowerCase());
+            });
+        }
     }
+
+    /*****************************************************
+     * @param {Object} error the exception object
+     * This is an internal method for error handling
+     ****************************************************/
+    errorHandler(error){
+        console.error(error);
+        this.error  = error;
+    }
+
     // this needs improvement
     /*arrayClone(item) {
         let i, copy;
